@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SplashPaint">
+    <link rel="apple-touch-icon" href="/icons/favicon-192x192.png">
+    <meta name="msapplication-TileImage" content="/icons/favicon-144x144.png">
+    <meta name="msapplication-TileColor" content="#f39e8c">
+    <title>Paint Splash Favicon Generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
+<link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body>
+    <!-- Loading screen with paintbrush icon -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <i class="fas fa-paint-brush loading-icon"></i>
+            <p class="loading-text">SplashPaint</p>
+        </div>
+    </div>
+    
+    <!-- PWA Install Banner -->
+    <div id="pwa-banner" class="pwa-banner">
+        <div class="pwa-content">
+            <i class="fas fa-mobile-alt"></i>
+            <div class="pwa-text">Install this web app for quick access</div>
+        </div>
+        <div class="pwa-buttons">
+            <button id="dismiss-button" class="pwa-btn pwa-dismiss">Dismiss</button>
+            <button id="install-button" class="pwa-btn pwa-install">Install</button>
+        </div>
+    </div>
+    
+    <div class="paint-splatter splatter-1"></div>
+    <div class="paint-splatter splatter-2"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-paint-brush"></i>
+                <h1>SplashPaint <span>Favicon</span></h1>
+            </div>
+            <div class="tagline">
+                Create Artistic Favicons in Seconds
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <div class="editor-panel">
+                <h2 class="panel-title"><i class="fas fa-palette"></i> Image Editor</h2>
+                
+                <div class="upload-area" id="upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Upload Your Image</h3>
+                    <p>Click or drag & drop to upload (PNG, JPG, SVG)</p>
+                    <input type="file" id="image-input" accept="image/*">
+                </div>
+                
+                <div class="custom-size-container">
+                    <h3 class="sub-title"><i class="fas fa-ruler-combined"></i> Custom Resolution</h3>
+                    <div class="custom-size-inputs">
+                        <input type="number" id="custom-width" placeholder="Width" min="16" max="1000">
+                        <span class="custom-size-separator">×</span>
+                        <input type="number" id="custom-height" placeholder="Height" min="16" max="1000">
+                        <button class="btn btn-secondary" id="add-size-btn">
+                            <i class="fas fa-plus"></i> Add Size
+                        </button>
+                    </div>
+                    <div class="custom-sizes-container" id="custom-sizes-container"></div>
+                </div>
+                
+                <div class="image-preview-container" id="image-preview-container">
+                    <img id="image-preview" src="" alt="Image preview">
+                    <div class="preview-info" id="preview-info"></div>
+                </div>
+                
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-primary" id="generate-btn">
+                        <i class="fas fa-magic"></i> Generate Favicon
+                    </button>
+                    <button class="btn btn-secondary" id="reset-btn">
+                        <i class="fas fa-broom"></i> Reset
+                    </button>
+                </div>
+                
+                <div class="instructions">
+                    <h4><i class="fas fa-lightbulb"></i> How to Create Your Favicon:</h4>
+                    <ul>
+                        <li><strong>Upload</strong> an image (PNG, JPG or SVG format)</li>
+                        <li>Your image will be centered with artistic transparent padding</li>
+                        <li><strong>Generate</strong> the favicon with the button</li>
+                        <li><strong>Preview</strong> your favicon and download all sizes as a ZIP file</li>
+                        <li>Favicons will be generated in <strong>10 standard sizes</strong> (16x16 to 400x400)</li>
+                        <li><strong>Add custom resolutions</strong> using the custom size tool</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="preview-panel">
+                <h2 class="panel-title"><i class="fas fa-eye-dropper"></i> Preview & Download</h2>
+                
+                <div class="preview-area">
+                    <div class="favicon-preview">
+                        <img id="favicon-preview" src="" alt="Favicon preview">
+                        <div class="preview-placeholder" id="preview-placeholder">
+                            <i class="fas fa-paint-brush"></i>
+                            <p>Favicon preview will appear here</p>
+                        </div>
+                    </div>
+                    
+                    <div class="sizes">
+                        <h3><i class="fas fa-brush"></i> Favicon Sizes</h3>
+                        <div class="size-grid">
+                            <div class="size-item">
+                                <i class="fas fa-mobile-alt"></i>
+                                <div class="size-value">16x16</div>
+                            </div>
+                            <div class="size-item">
+                                <i class="fas fa-window-maximize"></i>
+                                <div class="size-value">32x32</div>
+                            </div>
+                            <div class="size-item">
+                                <i class="fas fa-desktop"></i>
+                                <div class="size-value">48x48</div>
+                            </div>
+                            <div class="size-item">
+                                <i class="fas fa-expand"></i>
+                                <div class="size-value">64x64</div>
+                            </div>
+                            <div class="size-item">
+                                <i class="fas fa-tablet-alt"></i>
+                                <div class="size-value">128x128</div>
+                            </div>
+                            <div class="size-item">
+                                <i class="fas fa-tv"></i>
+                                <div class="size-value">256x256</div>
+                            </div>
+                            <div class="size-item">
+                                <i class="fab fa-apple"></i>
+                                <div class="size-value">180x180</div>
+                            </div>
+                            <div class="size-item">
+                                <i class="fab fa-windows"></i>
+                                <div class="size-value">187x187</div>
+                            </div>
+                            <div class="size-item">
+                                <i class="fas fa-square"></i>
+                                <div class="size-value">250x250</div>
+                            </div>
+                            <div class="size-item">
+                                <i class="fas fa-expand-arrows-alt"></i>
+                                <div class="size-value">400x400</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="download-btn" id="download-btn" disabled>
+                        <i class="fas fa-download"></i> Download All Favicons (ZIP)
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 SplashPaint Favicon Generator | Created By O.G</p>
+        </footer>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    
+<script src="assets/js/dashboard.js"></script>
+</body>
+</html>
