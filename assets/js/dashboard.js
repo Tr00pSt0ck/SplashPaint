@@ -17,12 +17,22 @@
             const dismissButton = document.getElementById('dismiss-button');
             let deferredPrompt = null;
             
-            // PWA Banner Logic
-            function showPwaBanner() {
+            // Check if the app is already installed
+            function isAppInstalled() {
+                return window.matchMedia('(display-mode: standalone)').matches || 
+                       (window.navigator.standalone) || 
+                       document.referrer.includes('android-app://');
+            }
+            
+            // Enhanced PWA detection for all browsers
+            function checkPWAInstallable() {
                 // Check if app is already installed
-                const isAppInstalled = window.matchMedia('(display-mode: standalone)').matches || 
-                                      (window.navigator.standalone) || 
-                                      document.referrer.includes('android-app://');
+                if (isAppInstalled()) {
+                    return false;
+                }
+                
+                // Check if the beforeinstallprompt event is supported
+                const isBeforeInstallPromptSupported = 'onbeforeinstallprompt' in window;
                 
                 // Check if it's iOS (which handles PWA differently)
                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -30,17 +40,22 @@
                 // Check session storage for dismissal
                 const isDismissed = sessionStorage.getItem('pwaDismissed') === 'true';
                 
-                if (!isAppInstalled && !isDismissed && (deferredPrompt || isIOS)) {
-                    // Calculate and set body padding
-                    pwaBanner.style.display = 'flex';
-                    const bannerHeight = pwaBanner.offsetHeight;
-                    document.body.style.paddingTop = `${bannerHeight}px`;
-                    
-                    // Show banner with animation
-                    setTimeout(() => {
-                        pwaBanner.classList.add('show');
-                    }, 50);
-                }
+                return (isBeforeInstallPromptSupported || isIOS) && !isDismissed;
+            }
+            
+            // PWA Banner Logic
+            function showPwaBanner() {
+                if (!checkPWAInstallable()) return;
+                
+                // Calculate and set body padding
+                pwaBanner.style.display = 'flex';
+                const bannerHeight = pwaBanner.offsetHeight;
+                document.body.style.paddingTop = `${bannerHeight}px`;
+                
+                // Show banner with animation
+                setTimeout(() => {
+                    pwaBanner.classList.add('show');
+                }, 50);
             }
             
             // Before Install Prompt
@@ -57,17 +72,16 @@
             function checkIOSPWA() {
                 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
                 if (isIOS) {
-                    const isDismissed = sessionStorage.getItem('pwaDismissed') === 'true';
-                    if (!isDismissed) {
-                        // Show iOS-specific instructions
-                        const pwaText = document.querySelector('.pwa-text');
-                        if (pwaText) {
-                            pwaText.textContent = "Add this app to your home screen for quick access";
+                    // Show iOS-specific instructions after a delay
+                    setTimeout(() => {
+                        if (checkPWAInstallable()) {
+                            const pwaText = document.querySelector('.pwa-text');
+                            if (pwaText) {
+                                pwaText.textContent = "Add this app to your home screen for quick access";
+                            }
+                            showPwaBanner();
                         }
-                        
-                        // Show the banner after a delay
-                        setTimeout(showPwaBanner, 3000);
-                    }
+                    }, 3000);
                 }
             }
             
