@@ -3,7 +3,7 @@
   "short_name": "SplashPaint",
   "description": "A Professional Favicon Resizer Progressive Web App",
   "start_url": "https://tr00pst0ck.github.io/SplashPaint/dashboard.html",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "portrait",
   "theme_color": "#f39e8c",
   "background_color": "#f19b8b",
