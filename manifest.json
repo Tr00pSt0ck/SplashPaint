@@ -5,8 +5,8 @@
   "start_url": "https://tr00pst0ck.github.io/SplashPaint/dashboard.html",
   "display": "fullscreen",
   "orientation": "portrait",
-  "theme_color": "#f39e8c",
-  "background_color": "#f19b8b",
+  "theme_color": "#0a0a0f",
+  "background_color": "#0a0a0f",
   "icons": [
     {
       "src": "https://tr00pst0ck.github.io/SplashPaint/icons/favicon-192x192.png",
